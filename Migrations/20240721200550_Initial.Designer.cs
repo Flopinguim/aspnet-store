@@ -12,8 +12,8 @@ using aspnet_store.Data;
 namespace aspnet_store.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240721062504_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20240721200550_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,11 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Fornecedor", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CNPJ")
                         .IsRequired()
@@ -62,15 +64,17 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.OrdemCompra", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("FornecedorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("FornecedorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -81,9 +85,11 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Pedido", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CodigoEAN")
                         .IsRequired()
@@ -108,8 +114,8 @@ namespace aspnet_store.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("OrdemCompraId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("OrdemCompraId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
@@ -127,9 +133,11 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Produto", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CodigoEAN")
                         .IsRequired()
@@ -152,16 +160,18 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Servico", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FornecedorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("FornecedorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -179,9 +189,11 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Usuario", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Departamento")
                         .IsRequired()
