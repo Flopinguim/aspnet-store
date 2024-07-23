@@ -1,6 +1,7 @@
 ﻿using aspnet_store.Data;
 using aspnet_store.Models.Entities;
-using aspnet_store.Models.ViewModels.ProdutoViewModel;
+using aspnet_store.Models.ViewModels.DepartamentoViewModels;
+using aspnet_store.Models.ViewModels.ProdutoViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,11 +47,26 @@ namespace aspnet_store.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id is null)
+                return NotFound();
+
             var produto = await dbContext.Produtos.FindAsync(id);
 
-            return View(produto);
+            if (produto is null)
+                return NotFound();
+
+            var viewModel = new AddProdutoViewModel
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                CodigoEAN = produto.CodigoEAN,
+                PrecoUnitario = produto.PrecoUnitario,
+                CotaMinima = produto.CotaMinima,
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -79,7 +95,7 @@ namespace aspnet_store.Controllers
             if (produto is not null)
             {
                 dbContext.Produtos.Remove(produto);
-                dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
 
             return RedirectToAction("List", "Produto");

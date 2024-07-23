@@ -1,4 +1,4 @@
-﻿namespace aspnet_store.Models.ViewModels.ProdutoViewModel
+﻿namespace aspnet_store.Models.ViewModels.ProdutoViewModels
 {
     public class AddProdutoViewModel
     {
