@@ -3,13 +3,14 @@
     public class Pedido
     {
         public int Id { get; set; }
-        public string CodigoSolicitacao { get; set; }
-        public string CodigoEAN { get; set; }
-        public string NomeProduto { get; set; }
+        public int ProdutoId { get; set; }
+        public Produto Produto { get; set; }
         public string Fabricante { get; set; }
         public int Quantidade { get; set; }
-        public string DepartamentoSolicitante { get; set; }
-        public string UsuarioSolicitante { get; set; }
+        public int DepartamentoId { get; set; }
+        public Departamento Departamento { get; set; }
+        public int UsuarioSolicitanteId { get; set; }
+        public Usuario UsuarioSolicitante { get; set; }
         public DateTime DataCadastro { get; set; }
     }
 }

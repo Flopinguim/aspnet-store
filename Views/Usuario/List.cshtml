@@ -6,31 +6,36 @@
 }
 
 @model List<Usuario>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1> Produtos </h1>
+        <a class="btn btn-primary mx-2" asp-controller="Usuario" asp-action="Add">Cadastrar Novo Usuário</a>
+    </div>
 
-<h1> Usuarios </h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Matrícula</th>
-            <th>Departamento</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var usuario in Model)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>@usuario.Id</td>
-                <td>@usuario.Nome</td>
-                <td>@usuario.Matricula</td>
-                <td>@usuario.Departamento.Nome</td>
-                <td>
-                    <a class="btn btn-primary" asp-controller="Usuario" asp-action="Edit" asp-route-id="@usuario.Id"><i class="bi bi-pencil-fill"></i></a>
-                    <a class="btn btn-danger" asp-controller="Usuario" asp-action="Delete" asp-route-id="@usuario.Id"><i class="bi bi-trash-fill"></i></a>
-                </td>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Matrícula</th>
+                <th>Departamento</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.Id</td>
+                    <td>@usuario.Nome</td>
+                    <td>@usuario.Matricula</td>
+                    <td>@usuario.Departamento.Nome</td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Usuario" asp-action="Edit" asp-route-id="@usuario.Id"><i class="bi bi-pencil-fill"></i></a>
+                        <a class="btn btn-danger" asp-controller="Usuario" asp-action="Delete" asp-route-id="@usuario.Id"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
