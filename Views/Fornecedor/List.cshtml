@@ -1,0 +1,41 @@
+﻿@using aspnet_store.Models.Entities
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model List<Fornecedor>
+
+<h1> Fornecedores </h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nome</th>
+            <th>Endereço</th>
+            <th>Email</th>
+            <th>CNPJ</th>
+            <th>Inscrição Estadual</th>
+            <th>Inscrição Municipal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var fornecedor in Model)
+        {
+            <tr>
+                <td>@fornecedor.Id</td>
+                <td>@fornecedor.Nome</td>
+                <td>@fornecedor.Endereco</td>
+                <td>@fornecedor.Email</td>
+                <td>@fornecedor.CNPJ</td>
+                <td>@fornecedor.InscricaoEstadual</td>
+                <td>@fornecedor.InscricaoMunicipal</td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="Fornecedor" asp-action="Edit" asp-route-id="@fornecedor.Id"><i class="bi bi-pencil-fill"></i></a>
+                    <a class="btn btn-danger" asp-controller="Fornecedor" asp-action="Delete" asp-route-id="@fornecedor.Id"><i class="bi bi-trash-fill"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

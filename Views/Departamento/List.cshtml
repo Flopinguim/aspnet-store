@@ -1,0 +1,32 @@
+﻿@using aspnet_store.Models.Entities
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model List<Departamento>
+
+<h1> Departamentos </h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nome</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var departamento in Model)
+        {
+            <tr>
+                <td>@departamento.Id</td>
+                <td>@departamento.Nome</td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="Departamento" asp-action="Edit" asp-route-id="@departamento.Id"><i class="bi bi-pencil-fill"></i></a>
+                    <a class="btn btn-danger" asp-controller="Departamento" asp-action="ConfirmDelete" asp-route-id="@departamento.Id"><i class="bi bi-trash-fill"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

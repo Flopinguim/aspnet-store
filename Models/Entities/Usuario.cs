@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Matricula { get; set; }
         public string Nome { get; set; }
-        public string Departamento { get; set; }
+        public int DepartamentoId { get; set; }
+        public Departamento Departamento { get; set; }
     }
 }
