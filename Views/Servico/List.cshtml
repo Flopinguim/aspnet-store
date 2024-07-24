@@ -1,0 +1,41 @@
+﻿@using aspnet_store.Models.Entities
+
+@model List<Servico>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1>Serviços</h1>
+        <a class="btn btn-primary mx-2" asp-controller="Servico" asp-action="Add">Cadastrar Novo Serviço</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Fornecedor</th>
+                <th>Descrição</th>
+                <th>Prazo de Entrega</th>
+                <th>Fornecedor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var servico in Model)
+            {
+                <tr>
+                    <td>@servico.Id</td>
+                    <td>@servico.Nome</td>
+                    <td>@servico.Fornecedor.Nome</td>
+                    <td>@servico.Descricao</td>
+                    <td>@servico.PrazoEntrega</td>
+                    <td>@servico.Fornecedor.Nome</td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Servico" asp-action="Edit" asp-route-id="@servico.Id"><i class="bi bi-pencil-fill"></i></a>
+                        <a class="btn btn-danger" asp-controller="Servico" asp-action="Delete" asp-route-id="@servico.Id"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

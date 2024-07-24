@@ -1,17 +1,17 @@
-﻿@using aspnet_store.Models.Entities
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
-@model List<Departamento>
+﻿@model List<aspnet_store.Models.Entities.Departamento>
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1> Produtos </h1>
+        <h1>Departamentos</h1>
         <a class="btn btn-primary mx-2" asp-controller="Departamento" asp-action="Add">Cadastrar Novo Departamento</a>
     </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
 
     <table class="table">
         <thead>
@@ -29,10 +29,52 @@
                     <td>@departamento.Nome</td>
                     <td>
                         <a class="btn btn-primary" asp-controller="Departamento" asp-action="Edit" asp-route-id="@departamento.Id"><i class="bi bi-pencil-fill"></i></a>
-                        <a class="btn btn-danger" asp-controller="Departamento" asp-action="ConfirmDelete" asp-route-id="@departamento.Id"><i class="bi bi-trash-fill"></i></a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@departamento.Id" data-name="@departamento.Nome">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmDeleteContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" asp-controller="Departamento" asp-action="Delete" id="confirmDeleteForm">
+                    <input type="hidden" name="id" id="deleteId" />
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+            confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-id');
+                var name = button.getAttribute('data-name');
+
+                var content = document.getElementById('confirmDeleteContent');
+                content.innerHTML = `Tem certeza de que deseja excluir o departamento <strong>${name}</strong>?`;
+                document.getElementById('deleteId').value = id;
+            });
+        });
+    </script>
+}

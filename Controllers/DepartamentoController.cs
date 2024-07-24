@@ -89,9 +89,9 @@ namespace aspnet_store.Controllers
             return RedirectToAction("List", "Departamento");
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> ConfirmDelete(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
         {
             var departamento = await dbContext.Departamentos.FindAsync(id);
             if (departamento is null)
@@ -99,31 +99,17 @@ namespace aspnet_store.Controllers
                 return NotFound();
             }
 
-            var usuarioCount = await dbContext.Usuarios.CountAsync(u => u.DepartamentoId.Equals(id));
-
-            var viewModel = new ConfirmDeleteViewModel
+            var usuarioCount = await dbContext.Usuarios.CountAsync(u => u.DepartamentoId == id);
+            if (usuarioCount > 0)
             {
-                Departamento = departamento,
-                UsuarioCount = usuarioCount
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var departamento = await dbContext.Departamentos.FirstOrDefaultAsync(i => i.Id.Equals(id));
-            if (departamento is not null)
-            {
-                dbContext.Departamentos.Remove(departamento);
-
-                await dbContext.SaveChangesAsync();
+                TempData["ErrorMessage"] = $"O departamento {departamento.Nome} tem {usuarioCount} usuário(s) associado(s). Não pode ser excluído.";
+                return RedirectToAction("List");
             }
 
-            return RedirectToAction("List", "Departamento");
-        }
+            dbContext.Departamentos.Remove(departamento);
+            await dbContext.SaveChangesAsync();
 
+            return RedirectToAction("List");
+        }
     }
 }
