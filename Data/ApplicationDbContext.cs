@@ -17,6 +17,8 @@ namespace aspnet_store.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Produto>()
                 .Property(p => p.PrecoUnitario)
                 .HasColumnType("decimal(18,2)");
@@ -29,6 +31,32 @@ namespace aspnet_store.Data
                 entity.Property(f => f.InscricaoMunicipal)
                     .HasDefaultValue(string.Empty);
             });
+
+            // Configuração para Usuario
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Departamento)
+                .WithMany()
+                .HasForeignKey(u => u.DepartamentoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configuração para Pedido
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.UsuarioSolicitante)
+                .WithMany()
+                .HasForeignKey(p => p.UsuarioSolicitanteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.Departamento)
+                .WithMany()
+                .HasForeignKey(p => p.DepartamentoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.Produto)
+                .WithMany()
+                .HasForeignKey(p => p.ProdutoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

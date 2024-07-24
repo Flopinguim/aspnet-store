@@ -1,0 +1,127 @@
+﻿@using aspnet_store.Models.ViewModels.ServicoViewModels
+
+@model AddServicoViewModel
+
+<h1>Adicionar Serviço</h1>
+
+<form method="post">
+
+    <div class="mt-3">
+        <label class="form-label">Nome</label>
+        <input type="text" class="form-control" asp-for="Nome" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Fornecedor</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" asp-for="FornecedorNome" id="fornecedorNome" readonly disabled />
+            <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
+            <span asp-validation-for="FornecedorId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#fornecedorModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-control" asp-for="Descricao" rows="3" maxlength="500" style="resize: vertical; max-width: 100%; max-height: 200px;"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Data Inicial</label>
+        <input type="date" class="form-control" asp-for="DataInicial" id="dataInicial" min="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="DataInicial" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Data Final</label>
+        <input type="date" class="form-control" asp-for="DataFinal" id="dataFinal" min="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="DataFinal" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Intervalo (dias):</label>
+        <input type="text" class="form-control" asp-for="PrazoEntrega" id="dateSpan" readonly />
+        <span asp-validation-for="PrazoEntrega" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="fornecedorModal" tabindex="-1" aria-labelledby="fornecedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fornecedorModalLabel">Selecione um Fornecedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fornecedor in Model.Fornecedores)
+                        {
+                            <tr onclick="selectFornecedor('@fornecedor.Id', '@fornecedor.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@fornecedor.Id</td>
+                                <td>@fornecedor.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dataInicialInput = document.getElementById('dataInicial');
+            const dataFinalInput = document.getElementById('dataFinal');
+            const dateSpanInput = document.getElementById('dateSpan');
+
+            function calculateDateSpan() {
+                const dataInicial = dataInicialInput.value;
+                const dataFinal = dataFinalInput.value;
+
+                if (dataInicial && dataFinal) {
+                    const startDate = new Date(dataInicial);
+                    const endDate = new Date(dataFinal);
+
+                    const timeSpan = endDate - startDate;
+                    const daysDifference = timeSpan / (1000 * 3600 * 24);
+
+                    dateSpanInput.value = daysDifference;
+                } else {
+                    dateSpanInput.value = '';
+                }
+            }
+
+            dataInicialInput.addEventListener('change', calculateDateSpan);
+            dataFinalInput.addEventListener('change', calculateDateSpan);
+        });
+
+        function selectFornecedor(id, nome) {
+            document.getElementById('fornecedorId').value = id;
+            document.getElementById('fornecedorNome').value = nome;
+        }
+    </script>
+}

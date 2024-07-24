@@ -188,8 +188,8 @@ namespace aspnet_store.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("PrazoEntrega")
-                        .HasColumnType("time");
+                    b.Property<int>("PrazoEntrega")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -240,7 +240,7 @@ namespace aspnet_store.Migrations
                     b.HasOne("aspnet_store.Models.Entities.Departamento", "Departamento")
                         .WithMany()
                         .HasForeignKey("DepartamentoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("aspnet_store.Models.Entities.OrdemCompra", null)
@@ -250,13 +250,13 @@ namespace aspnet_store.Migrations
                     b.HasOne("aspnet_store.Models.Entities.Produto", "Produto")
                         .WithMany()
                         .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("aspnet_store.Models.Entities.Usuario", "UsuarioSolicitante")
                         .WithMany()
                         .HasForeignKey("UsuarioSolicitanteId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Departamento");
@@ -282,7 +282,7 @@ namespace aspnet_store.Migrations
                     b.HasOne("aspnet_store.Models.Entities.Departamento", "Departamento")
                         .WithMany()
                         .HasForeignKey("DepartamentoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Departamento");

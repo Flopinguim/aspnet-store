@@ -12,7 +12,7 @@ using aspnet_store.Data;
 namespace aspnet_store.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240721200550_Initial")]
+    [Migration("20240723220339_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,23 @@ namespace aspnet_store.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.Departamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departamentos");
+                });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Fornecedor", b =>
                 {
@@ -46,12 +63,14 @@ namespace aspnet_store.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InscricaoEstadual")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("");
 
                     b.Property<string>("InscricaoMunicipal")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -91,42 +110,37 @@ namespace aspnet_store.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CodigoEAN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CodigoSolicitacao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DepartamentoSolicitante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DepartamentoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Fabricante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NomeProduto")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OrdemCompraId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
-                    b.Property<string>("UsuarioSolicitante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UsuarioSolicitanteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartamentoId");
+
                     b.HasIndex("OrdemCompraId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("UsuarioSolicitanteId");
 
                     b.ToTable("Pedidos");
                 });
@@ -177,8 +191,8 @@ namespace aspnet_store.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("PrazoEntrega")
-                        .HasColumnType("time");
+                    b.Property<int>("PrazoEntrega")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -195,9 +209,8 @@ namespace aspnet_store.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Departamento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DepartamentoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Matricula")
                         .IsRequired()
@@ -208,6 +221,8 @@ namespace aspnet_store.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartamentoId");
 
                     b.ToTable("Usuarios");
                 });
@@ -225,9 +240,33 @@ namespace aspnet_store.Migrations
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Pedido", b =>
                 {
+                    b.HasOne("aspnet_store.Models.Entities.Departamento", "Departamento")
+                        .WithMany()
+                        .HasForeignKey("DepartamentoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("aspnet_store.Models.Entities.OrdemCompra", null)
                         .WithMany("Pedidos")
                         .HasForeignKey("OrdemCompraId");
+
+                    b.HasOne("aspnet_store.Models.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("aspnet_store.Models.Entities.Usuario", "UsuarioSolicitante")
+                        .WithMany()
+                        .HasForeignKey("UsuarioSolicitanteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Departamento");
+
+                    b.Navigation("Produto");
+
+                    b.Navigation("UsuarioSolicitante");
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Servico", b =>
@@ -239,6 +278,17 @@ namespace aspnet_store.Migrations
                         .IsRequired();
 
                     b.Navigation("Fornecedor");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.Usuario", b =>
+                {
+                    b.HasOne("aspnet_store.Models.Entities.Departamento", "Departamento")
+                        .WithMany()
+                        .HasForeignKey("DepartamentoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Departamento");
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.OrdemCompra", b =>
