@@ -12,8 +12,12 @@ namespace aspnet_store.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Fornecedor> Fornecedores { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
-        public DbSet<OrdemCompra> OrdensCompra { get; set; }
+        public DbSet<PedidoProduto> PedidoProdutos { get; set; }
+        public DbSet<PedidoServico> PedidoServicos { get; set; }
         public DbSet<Departamento> Departamentos { get; set; }
+        public DbSet<OrdemCompra> OrdensCompra { get; set; }
+        public DbSet<EntradaProduto> EntradasProduto { get; set; }
+        public DbSet<SaidaProduto> SaidasProduto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +25,10 @@ namespace aspnet_store.Data
 
             modelBuilder.Entity<Produto>()
                 .Property(p => p.PrecoUnitario)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Servico>()
+                .Property(s => s.Preco)
                 .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Fornecedor>(entity =>
@@ -32,14 +40,17 @@ namespace aspnet_store.Data
                     .HasDefaultValue(string.Empty);
             });
 
-            // Configuração para Usuario
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.Departamento)
                 .WithMany()
                 .HasForeignKey(u => u.DepartamentoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuração para Pedido
+            modelBuilder.Entity<Pedido>()
+                .HasDiscriminator<string>("PedidoType")
+                .HasValue<PedidoProduto>("Produto")
+                .HasValue<PedidoServico>("Servico");
+
             modelBuilder.Entity<Pedido>()
                 .HasOne(p => p.UsuarioSolicitante)
                 .WithMany()
@@ -53,9 +64,27 @@ namespace aspnet_store.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.OrdemCompra)
+                .WithMany(o => o.Pedidos)
+                .HasForeignKey(p => p.OrdemCompraId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PedidoProduto>()
                 .HasOne(p => p.Produto)
                 .WithMany()
                 .HasForeignKey(p => p.ProdutoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PedidoServico>()
+                .HasOne(p => p.Servico)
+                .WithMany()
+                .HasForeignKey(p => p.ServicoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PedidoServico>()
+                .HasOne(p => p.Fornecedor)
+                .WithMany()
+                .HasForeignKey(p => p.FornecedorId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

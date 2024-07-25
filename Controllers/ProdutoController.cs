@@ -23,17 +23,22 @@ namespace aspnet_store.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddProdutoViewModel viewModel)
         {
-            var produto = new Produto()
+            if (ModelState.IsValid)
             {
-                Nome = viewModel.Nome,
-                CodigoEAN = viewModel.CodigoEAN,
-                PrecoUnitario = viewModel.PrecoUnitario,
-                CotaMinima = viewModel.CotaMinima,
-            };
+                var produto = new Produto()
+                {
+                    Nome = viewModel.Nome,
+                    CodigoEAN = viewModel.CodigoEAN,
+                    Fabricante = viewModel.Fabricante,
+                    PrecoUnitario = viewModel.PrecoUnitario,
+                    Estoque = viewModel.Estoque,
+                };
 
-            await dbContext.Produtos.AddAsync(produto);
+                await dbContext.Produtos.AddAsync(produto);
+                await dbContext.SaveChangesAsync();
 
-            await dbContext.SaveChangesAsync();
+                return RedirectToAction("List");
+            }
 
             return View();
         }
@@ -62,8 +67,9 @@ namespace aspnet_store.Controllers
                 Id = produto.Id,
                 Nome = produto.Nome,
                 CodigoEAN = produto.CodigoEAN,
+                Fabricante= produto.Fabricante,
                 PrecoUnitario = produto.PrecoUnitario,
-                CotaMinima = produto.CotaMinima,
+                Estoque = produto.Estoque,
             };
 
             return View(viewModel);
@@ -78,13 +84,14 @@ namespace aspnet_store.Controllers
             {
                 produto.Nome = viewModel.Nome;
                 produto.CodigoEAN = viewModel.CodigoEAN;
+                produto.Fabricante = viewModel.Fabricante;
                 produto.PrecoUnitario = viewModel.PrecoUnitario;
-                produto.CotaMinima = viewModel.CotaMinima;
+                produto.Estoque = viewModel.Estoque;
 
                 await dbContext.SaveChangesAsync();
             }
 
-            return RedirectToAction("List", "Produto");
+            return RedirectToAction("List");
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -98,7 +105,7 @@ namespace aspnet_store.Controllers
                 await dbContext.SaveChangesAsync();
             }
 
-            return RedirectToAction("List", "Produto");
+            return RedirectToAction("List");
         }
     }
 }

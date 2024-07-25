@@ -12,7 +12,7 @@ using aspnet_store.Data;
 namespace aspnet_store.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240723220339_Initial")]
+    [Migration("20240725110025_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -40,6 +40,38 @@ namespace aspnet_store.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departamentos");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.EntradaProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Deposito")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotaFiscal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrdemCompraId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrdemCompraId");
+
+                    b.ToTable("EntradasProduto");
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Fornecedor", b =>
@@ -116,18 +148,13 @@ namespace aspnet_store.Migrations
                     b.Property<int>("DepartamentoId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Fabricante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("OrdemCompraId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
+                    b.Property<string>("PedidoType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<int>("UsuarioSolicitanteId")
                         .HasColumnType("int");
@@ -138,11 +165,13 @@ namespace aspnet_store.Migrations
 
                     b.HasIndex("OrdemCompraId");
 
-                    b.HasIndex("ProdutoId");
-
                     b.HasIndex("UsuarioSolicitanteId");
 
                     b.ToTable("Pedidos");
+
+                    b.HasDiscriminator<string>("PedidoType").HasValue("Pedido");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Produto", b =>
@@ -157,8 +186,12 @@ namespace aspnet_store.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CotaMinima")
+                    b.Property<int>("Estoque")
                         .HasColumnType("int");
+
+                    b.Property<string>("Fabricante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -170,6 +203,38 @@ namespace aspnet_store.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Produtos");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.SaidaProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DepartamentoSolicitante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrdemCompraId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrdemCompraId");
+
+                    b.ToTable("SaidasProduto");
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Servico", b =>
@@ -193,6 +258,9 @@ namespace aspnet_store.Migrations
 
                     b.Property<int>("PrazoEntrega")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -227,6 +295,53 @@ namespace aspnet_store.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("aspnet_store.Models.Entities.PedidoProduto", b =>
+                {
+                    b.HasBaseType("aspnet_store.Models.Entities.Pedido");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasDiscriminator().HasValue("Produto");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.PedidoServico", b =>
+                {
+                    b.HasBaseType("aspnet_store.Models.Entities.Pedido");
+
+                    b.Property<int>("FornecedorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ServicoId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("FornecedorId");
+
+                    b.HasIndex("ServicoId");
+
+                    b.HasDiscriminator().HasValue("Servico");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.EntradaProduto", b =>
+                {
+                    b.HasOne("aspnet_store.Models.Entities.OrdemCompra", "OrdemCompra")
+                        .WithMany()
+                        .HasForeignKey("OrdemCompraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrdemCompra");
+                });
+
             modelBuilder.Entity("aspnet_store.Models.Entities.OrdemCompra", b =>
                 {
                     b.HasOne("aspnet_store.Models.Entities.Fornecedor", "Fornecedor")
@@ -250,12 +365,6 @@ namespace aspnet_store.Migrations
                         .WithMany("Pedidos")
                         .HasForeignKey("OrdemCompraId");
 
-                    b.HasOne("aspnet_store.Models.Entities.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("aspnet_store.Models.Entities.Usuario", "UsuarioSolicitante")
                         .WithMany()
                         .HasForeignKey("UsuarioSolicitanteId")
@@ -264,9 +373,18 @@ namespace aspnet_store.Migrations
 
                     b.Navigation("Departamento");
 
-                    b.Navigation("Produto");
-
                     b.Navigation("UsuarioSolicitante");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.SaidaProduto", b =>
+                {
+                    b.HasOne("aspnet_store.Models.Entities.OrdemCompra", "OrdemCompra")
+                        .WithMany()
+                        .HasForeignKey("OrdemCompraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrdemCompra");
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.Servico", b =>
@@ -289,6 +407,36 @@ namespace aspnet_store.Migrations
                         .IsRequired();
 
                     b.Navigation("Departamento");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.PedidoProduto", b =>
+                {
+                    b.HasOne("aspnet_store.Models.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("aspnet_store.Models.Entities.PedidoServico", b =>
+                {
+                    b.HasOne("aspnet_store.Models.Entities.Fornecedor", "Fornecedor")
+                        .WithMany()
+                        .HasForeignKey("FornecedorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("aspnet_store.Models.Entities.Servico", "Servico")
+                        .WithMany()
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Fornecedor");
+
+                    b.Navigation("Servico");
                 });
 
             modelBuilder.Entity("aspnet_store.Models.Entities.OrdemCompra", b =>

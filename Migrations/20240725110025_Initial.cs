@@ -51,7 +51,8 @@ namespace aspnet_store.Migrations
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CodigoEAN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PrecoUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CotaMinima = table.Column<int>(type: "int", nullable: false)
+                    Estoque = table.Column<int>(type: "int", nullable: false),
+                    Fabricante = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -108,6 +109,7 @@ namespace aspnet_store.Migrations
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FornecedorId = table.Column<int>(type: "int", nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PrazoEntrega = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -122,18 +124,67 @@ namespace aspnet_store.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EntradasProduto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrdemCompraId = table.Column<int>(type: "int", nullable: false),
+                    NotaFiscal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    Deposito = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EntradasProduto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EntradasProduto_OrdensCompra_OrdemCompraId",
+                        column: x => x.OrdemCompraId,
+                        principalTable: "OrdensCompra",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SaidasProduto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrdemCompraId = table.Column<int>(type: "int", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    Usuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DepartamentoSolicitante = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaidasProduto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SaidasProduto_OrdensCompra_OrdemCompraId",
+                        column: x => x.OrdemCompraId,
+                        principalTable: "OrdensCompra",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pedidos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProdutoId = table.Column<int>(type: "int", nullable: false),
-                    Fabricante = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantidade = table.Column<int>(type: "int", nullable: false),
                     DepartamentoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioSolicitanteId = table.Column<int>(type: "int", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrdemCompraId = table.Column<int>(type: "int", nullable: true)
+                    OrdemCompraId = table.Column<int>(type: "int", nullable: true),
+                    PedidoType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    ProdutoId = table.Column<int>(type: "int", nullable: true),
+                    Quantidade = table.Column<int>(type: "int", nullable: true),
+                    ServicoId = table.Column<int>(type: "int", nullable: true),
+                    FornecedorId = table.Column<int>(type: "int", nullable: true),
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -142,6 +193,12 @@ namespace aspnet_store.Migrations
                         name: "FK_Pedidos_Departamentos_DepartamentoId",
                         column: x => x.DepartamentoId,
                         principalTable: "Departamentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Fornecedores_FornecedorId",
+                        column: x => x.FornecedorId,
+                        principalTable: "Fornecedores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -156,12 +213,23 @@ namespace aspnet_store.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Pedidos_Servicos_ServicoId",
+                        column: x => x.ServicoId,
+                        principalTable: "Servicos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Pedidos_Usuarios_UsuarioSolicitanteId",
                         column: x => x.UsuarioSolicitanteId,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EntradasProduto_OrdemCompraId",
+                table: "EntradasProduto",
+                column: "OrdemCompraId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdensCompra_FornecedorId",
@@ -174,6 +242,11 @@ namespace aspnet_store.Migrations
                 column: "DepartamentoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_FornecedorId",
+                table: "Pedidos",
+                column: "FornecedorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_OrdemCompraId",
                 table: "Pedidos",
                 column: "OrdemCompraId");
@@ -184,9 +257,19 @@ namespace aspnet_store.Migrations
                 column: "ProdutoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_ServicoId",
+                table: "Pedidos",
+                column: "ServicoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_UsuarioSolicitanteId",
                 table: "Pedidos",
                 column: "UsuarioSolicitanteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SaidasProduto_OrdemCompraId",
+                table: "SaidasProduto",
+                column: "OrdemCompraId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Servicos_FornecedorId",
@@ -203,25 +286,31 @@ namespace aspnet_store.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "EntradasProduto");
+
+            migrationBuilder.DropTable(
                 name: "Pedidos");
 
             migrationBuilder.DropTable(
-                name: "Servicos");
-
-            migrationBuilder.DropTable(
-                name: "OrdensCompra");
+                name: "SaidasProduto");
 
             migrationBuilder.DropTable(
                 name: "Produtos");
 
             migrationBuilder.DropTable(
+                name: "Servicos");
+
+            migrationBuilder.DropTable(
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
-                name: "Fornecedores");
+                name: "OrdensCompra");
 
             migrationBuilder.DropTable(
                 name: "Departamentos");
+
+            migrationBuilder.DropTable(
+                name: "Fornecedores");
         }
     }
 }

@@ -47,6 +47,7 @@ namespace aspnet_store.Controllers
                     Nome = viewModel.Nome,
                     FornecedorId = viewModel.FornecedorId,
                     Descricao = viewModel.Descricao,
+                    Preco = viewModel.Preco,
                     PrazoEntrega = viewModel.PrazoEntrega,
                 };
 
@@ -70,58 +71,56 @@ namespace aspnet_store.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id is null)
-                return NotFound();
-
             var servico = await dbContext.Servicos.FindAsync(id);
-
-            if (servico is null)
+            if (servico == null)
+            {
                 return NotFound();
+            }
 
             var viewModel = new AddServicoViewModel
             {
                 Id = servico.Id,
                 Nome = servico.Nome,
-                FornecedorId = servico.FornecedorId,
                 Descricao = servico.Descricao,
+                Preco = servico.Preco,
                 PrazoEntrega = servico.PrazoEntrega,
+                FornecedorId = servico.FornecedorId,
+                FornecedorNome = servico.Fornecedor?.Nome
             };
+
+            viewModel.Fornecedores = await dbContext.Fornecedores.ToListAsync() ?? new List<Fornecedor>();
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Servico viewModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(AddServicoViewModel viewModel)
         {
-            var servico = await dbContext.Servicos.FindAsync(viewModel.Id);
-
-            if (servico is not null)
+            if (ModelState.IsValid)
             {
+                var servico = await dbContext.Servicos.FindAsync(viewModel.Id);
+                if (servico == null)
+                {
+                    return NotFound();
+                }
+
                 servico.Nome = viewModel.Nome;
-                servico.FornecedorId = viewModel.Fornecedor.Id;
                 servico.Descricao = viewModel.Descricao;
                 servico.PrazoEntrega = viewModel.PrazoEntrega;
+                servico.Preco = viewModel.Preco;
+                servico.FornecedorId = viewModel.FornecedorId;
 
+                dbContext.Servicos.Update(servico);
                 await dbContext.SaveChangesAsync();
+
+                return RedirectToAction("List");
             }
 
-            return RedirectToAction("List", "Servico");
-        }
-
-        public async Task<IActionResult> Delete(int id)
-        {
-            var servico = await dbContext.Servicos
-                .FirstOrDefaultAsync(i => i.Id.Equals(id));
-
-            if (servico is not null)
-            {
-                dbContext.Servicos.Remove(servico);
-                await dbContext.SaveChangesAsync();
-            }
-
-            return RedirectToAction("List", "Servico");
+            viewModel.Fornecedores = await dbContext.Fornecedores.ToListAsync() ?? new List<Fornecedor>();
+            return View(viewModel);
         }
     }
 }

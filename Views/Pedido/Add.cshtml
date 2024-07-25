@@ -1,0 +1,323 @@
+﻿@using aspnet_store.Models.ViewModels.PedidoViewModels
+@model AddPedidoViewModel
+
+<h1>Criar Pedido</h1>
+
+<form asp-action="Add" method="post">
+    <div class="form-group mt-3">
+        <label asp-for="TipoPedido" class="form-label">Tipo de Pedido</label>
+        <select asp-for="TipoPedido" class="form-control" onchange="toggleTipoPedido()">
+            <option value="">Selecione o Tipo de Pedido</option>
+            <option value="Produto">Produto</option>
+            <option value="Servico">Serviço</option>
+        </select>
+        <span asp-validation-for="TipoPedido" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Departamento</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="departamentoNome" readonly />
+            <input type="hidden" asp-for="DepartamentoId" id="departamentoId" />
+            <span asp-validation-for="DepartamentoId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#departamentoModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Usuário Solicitante</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="usuarioNome" readonly />
+            <input type="hidden" asp-for="UsuarioSolicitanteId" id="usuarioId" />
+            <span asp-validation-for="UsuarioSolicitanteId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#usuarioModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group produto-fields mt-3" style="display: none;">
+        <label class="form-label">Produto</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="produtoNome" readonly />
+            <input type="hidden" asp-for="ProdutoId" id="produtoId" />
+            <span asp-validation-for="ProdutoId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#produtoModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <label asp-for="Quantidade" class="form-label mt-3">Quantidade</label>
+        <input asp-for="Quantidade" class="form-control" />
+        <span asp-validation-for="Quantidade" class="text-danger"></span>
+    </div>
+
+    <div class="form-group servico-fields mt-3" style="display: none;">
+        <label class="form-label">Serviço</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="servicoNome" readonly />
+            <input type="hidden" asp-for="ServicoId" id="servicoId" />
+            <span asp-validation-for="ServicoId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#servicoModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <label class="form-label mt-3">Fornecedor</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="fornecedorNome" readonly />
+            <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
+            <span asp-validation-for="FornecedorId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#fornecedorModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <label asp-for="Observacao" class="form-label mt-3">Observação</label>
+        <textarea asp-for="Observacao" class="form-control"></textarea>
+        <span asp-validation-for="Observacao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label asp-for="DataCadastro" class="form-label">Data de Cadastro</label>
+        <input asp-for="DataCadastro" class="form-control" type="date" />
+        <span asp-validation-for="DataCadastro" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+
+<!-- Modal para Departamento -->
+<div class="modal fade" id="departamentoModal" tabindex="-1" aria-labelledby="departamentoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="departamentoModalLabel">Selecione um Departamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var departamento in Model.Departamentos)
+                        {
+                            <tr onclick="selectDepartamento('@departamento.Id', '@departamento.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@departamento.Id</td>
+                                <td>@departamento.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Usuário Solicitante -->
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="usuarioModalLabel">Selecione um Usuário Solicitante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var usuario in Model.Usuarios)
+                        {
+                            <tr onclick="selectUsuario('@usuario.Id', '@usuario.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@usuario.Id</td>
+                                <td>@usuario.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Produto -->
+<div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="produtoModalLabel">Selecione um Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var produto in Model.Produtos)
+                        {
+                            <tr onclick="selectProduto('@produto.Id', '@produto.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@produto.Id</td>
+                                <td>@produto.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Serviço -->
+<div class="modal fade" id="servicoModal" tabindex="-1" aria-labelledby="servicoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="servicoModalLabel">Selecione um Serviço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var servico in Model.Servicos)
+                        {
+                            <tr onclick="selectServico('@servico.Id', '@servico.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@servico.Id</td>
+                                <td>@servico.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Fornecedor -->
+<div class="modal fade" id="fornecedorModal" tabindex="-1" aria-labelledby="fornecedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fornecedorModalLabel">Selecione um Fornecedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fornecedor in Model.Fornecedores)
+                        {
+                            <tr onclick="selectFornecedor('@fornecedor.Id', '@fornecedor.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@fornecedor.Id</td>
+                                <td>@fornecedor.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleTipoPedido() {
+            var tipoPedido = document.getElementById('TipoPedido').value;
+            var produtoFields = document.querySelector('.produto-fields');
+            var servicoFields = document.querySelector('.servico-fields');
+
+            if (tipoPedido === "Produto") {
+                produtoFields.style.display = 'block';
+                servicoFields.style.display = 'none';
+            } else if (tipoPedido === "Servico") {
+                produtoFields.style.display = 'none';
+                servicoFields.style.display = 'block';
+            } else {
+                produtoFields.style.display = 'none';
+                servicoFields.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            toggleTipoPedido();
+        });
+
+        function selectDepartamento(id, nome) {
+            document.getElementById('departamentoId').value = id;
+            document.getElementById('departamentoNome').value = nome;
+        }
+
+        function selectUsuario(id, nome) {
+            document.getElementById('usuarioId').value = id;
+            document.getElementById('usuarioNome').value = nome;
+        }
+
+        function selectProduto(id, nome) {
+            document.getElementById('produtoId').value = id;
+            document.getElementById('produtoNome').value = nome;
+        }
+
+        function selectServico(id, nome) {
+            document.getElementById('servicoId').value = id;
+            document.getElementById('servicoNome').value = nome;
+        }
+
+        function selectFornecedor(id, nome) {
+            document.getElementById('fornecedorId').value = id;
+            document.getElementById('fornecedorNome').value = nome;
+        }
+    </script>
+}

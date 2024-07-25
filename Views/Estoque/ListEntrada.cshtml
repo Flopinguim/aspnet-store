@@ -1,0 +1,29 @@
+﻿@model List<aspnet_store.Models.Entities.EntradaProduto>
+
+<h1>Entradas de Produto</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Ordem de Compra</th>
+            <th>Nota Fiscal</th>
+            <th>Quantidade</th>
+            <th>Depósito</th>
+            <th>Data de Cadastro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entrada in Model)
+        {
+            <tr>
+                <td>@entrada.Id</td>
+                <td>@entrada.OrdemCompraId</td>
+                <td>@entrada.NotaFiscal</td>
+                <td>@entrada.Quantidade</td>
+                <td>@entrada.Deposito</td>
+                <td>@entrada.DataCadastro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

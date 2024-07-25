@@ -1,0 +1,46 @@
+﻿@using aspnet_store.Models.Entities
+
+@model List<OrdemCompra>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1> Ordens de Compra </h1>
+        <a class="btn btn-primary mx-2" asp-controller="OrdemCompra" asp-action="Add">Cadastrar Nova Ordem de Compra</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fornecedor</th>
+                <th>Data de Cadastro</th>
+                <th>Total</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ordem in Model)
+            {
+                <tr>
+                    <td>@ordem.Id</td>
+                    <td>@ordem.Fornecedor.Nome</td>
+                    <td>@ordem.DataCadastro.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @{
+                            var total = ordem.Pedidos.Sum(p => p is PedidoProduto pp ? pp.Quantidade * pp.Produto.PrecoUnitario : (p is PedidoServico ps ? ps.Servico.Preco : 0));
+                        }
+                        @total.ToString("C")
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Estoque" asp-action="EntradaProduto" asp-route-ordemCompraId="@ordem.Id">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrada Produto
+                        </a>
+                        <a class="btn btn-danger" asp-controller="Estoque" asp-action="SaidaProduto" asp-route-ordemCompraId="@ordem.Id">
+                            <i class="bi bi-box-arrow-right"></i> Saída Produto
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
