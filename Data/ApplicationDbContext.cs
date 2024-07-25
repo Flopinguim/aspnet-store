@@ -86,6 +86,23 @@ namespace aspnet_store.Data
                 .WithMany()
                 .HasForeignKey(p => p.FornecedorId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configurar precisão das datas
+            modelBuilder.Entity<OrdemCompra>()
+                .Property(o => o.DataCadastro)
+                .HasColumnType("datetime2(0)");
+
+            modelBuilder.Entity<EntradaProduto>()
+                .Property(e => e.DataCadastro)
+                .HasColumnType("datetime2(0)");
+
+            modelBuilder.Entity<SaidaProduto>()
+                .Property(s => s.DataCadastro)
+                .HasColumnType("datetime2(0)");
+
+            modelBuilder.Entity<Pedido>()
+                .Property(p => p.DataCadastro)
+                .HasColumnType("datetime2(0)");
         }
     }
 }

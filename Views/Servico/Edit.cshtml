@@ -3,69 +3,63 @@
 
 <h1>Editar Serviço</h1>
 
-@if (Model is null)
-{
-    <p>Serviço não encontrado</p>
-}
-else
-{
-    <form method="post">
-        <div class="mt-3">
-            <label class="form-label">Id</label>
-            <input type="text" class="form-control" asp-for="Id" readonly />
-        </div>
+<form asp-action="Edit" method="post">
+    <div class="mt-3">
+        <label class="form-label">Nome</label>
+        <input type="text" class="form-control" asp-for="Nome" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
 
-        <div class="mt-3">
-            <label class="form-label">Nome</label>
-            <input type="text" class="form-control" asp-for="Nome" />
-        </div>
+    <div class="mt-3">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-control" asp-for="Descricao"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
 
-        <div class="mt-3">
-            <label class="form-label">Descrição</label>
-            <textarea class="form-control" asp-for="Descricao"></textarea>
-        </div>
+    <div class="mt-3">
+        <label class="form-label">Data Inicial</label>
+        <input type="date" class="form-control" asp-for="DataInicial" id="DataInicial" />
+        <span asp-validation-for="DataInicial" class="text-danger"></span>
+    </div>
 
-        <div class="mt-3">
-            <label class="form-label">Preço</label>
-            <input type="number" class="form-control" asp-for="Preco" />
-        </div>
+    <div class="mt-3">
+        <label class="form-label">Data Final</label>
+        <input type="date" class="form-control" asp-for="DataFinal" id="DataFinal" />
+        <span asp-validation-for="DataFinal" class="text-danger"></span>
+    </div>
 
-        <div class="mt-3">
-            <label class="form-label">Data Inicial</label>
-            <input type="date" class="form-control" asp-for="DataInicial" />
-        </div>
+    <div class="mt-3">
+        <label class="form-label">Preço</label>
+        <input type="number" class="form-control" asp-for="Preco" step="0.01" id="Preco" min="0" />
+        <span asp-validation-for="Preco" class="text-danger"></span>
+    </div>
 
-        <div class="mt-3">
-            <label class="form-label">Data Final</label>
-            <input type="date" class="form-control" asp-for="DataFinal" />
-        </div>
-
-        <div class="mt-3">
-            <label class="form-label">Prazo de Entrega (dias)</label>
-            <input type="number" class="form-control" asp-for="PrazoEntrega" readonly />
-        </div>
-
-        <div class="mt-3">
-            <label class="form-label">Fornecedor</label>
-            <div class="input-group">
-                <input type="text" class="form-control rounded-end" asp-for="FornecedorNome" id="fornecedorNome" readonly disabled />
-                <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
-                <span asp-validation-for="FornecedorId" class="text-danger"></span>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#fornecedorModal" style="margin-left: 10px">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
+    <div class="mt-3">
+        <label class="form-label">Fornecedor</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" asp-for="FornecedorNome" id="fornecedorNome" readonly />
+            <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
+            <span asp-validation-for="FornecedorId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#fornecedorModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
             </div>
         </div>
+    </div>
 
-        <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-        </div>
-    </form>
-}
+    <div class="mt-3">
+        <label class="form-label">Prazo de Entrega (dias)</label>
+        <input type="number" class="form-control" asp-for="PrazoEntrega" readonly min="0" />
+        <span asp-validation-for="PrazoEntrega" class="text-danger"></span>
+    </div>
 
-<!-- Modal -->
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+
+<!-- Modal para Fornecedor -->
 <div class="modal fade" id="fornecedorModal" tabindex="-1" aria-labelledby="fornecedorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -101,11 +95,47 @@ else
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script>
         function selectFornecedor(id, nome) {
             document.getElementById('fornecedorId').value = id;
             document.getElementById('fornecedorNome').value = nome;
         }
+
+        document.getElementById("DataInicial").addEventListener("change", function () {
+            var dataInicial = document.getElementById("DataInicial").value;
+            document.getElementById("DataFinal").setAttribute("min", dataInicial);
+            calculatePrazoEntrega();
+        });
+
+        document.getElementById("DataFinal").addEventListener("change", calculatePrazoEntrega);
+
+        function calculatePrazoEntrega() {
+            var dataInicial = document.getElementById("DataInicial").value;
+            var dataFinal = document.getElementById("DataFinal").value;
+
+            if (dataInicial && dataFinal) {
+                var date1 = new Date(dataInicial);
+                var date2 = new Date(dataFinal);
+                if (date2 < date1) {
+                    alert("Data Final não pode ser menor que a Data Inicial.");
+                    document.getElementById("DataFinal").value = "";
+                    document.getElementById("PrazoEntrega").value = "";
+                    return;
+                }
+                var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                document.getElementById("PrazoEntrega").value = diffDays;
+            } else {
+                document.getElementById("PrazoEntrega").value = "";
+            }
+        }
+
+        document.getElementById("Preco").addEventListener("input", function () {
+            var preco = document.getElementById("Preco").value;
+            if (preco < 0) {
+                alert("Preço não pode ser negativo.");
+                document.getElementById("Preco").value = "";
+            }
+        });
     </script>
 }

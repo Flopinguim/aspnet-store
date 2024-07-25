@@ -12,7 +12,7 @@ using aspnet_store.Data;
 namespace aspnet_store.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240725110025_Initial")]
+    [Migration("20240725210612_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -51,7 +51,7 @@ namespace aspnet_store.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Deposito")
                         .IsRequired()
@@ -122,7 +122,7 @@ namespace aspnet_store.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<int>("FornecedorId")
                         .HasColumnType("int");
@@ -143,7 +143,7 @@ namespace aspnet_store.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<int>("DepartamentoId")
                         .HasColumnType("int");
@@ -214,7 +214,7 @@ namespace aspnet_store.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("DepartamentoSolicitante")
                         .IsRequired()
@@ -244,6 +244,12 @@ namespace aspnet_store.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataFinal")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataInicial")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -361,9 +367,10 @@ namespace aspnet_store.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("aspnet_store.Models.Entities.OrdemCompra", null)
+                    b.HasOne("aspnet_store.Models.Entities.OrdemCompra", "OrdemCompra")
                         .WithMany("Pedidos")
-                        .HasForeignKey("OrdemCompraId");
+                        .HasForeignKey("OrdemCompraId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("aspnet_store.Models.Entities.Usuario", "UsuarioSolicitante")
                         .WithMany()
@@ -372,6 +379,8 @@ namespace aspnet_store.Migrations
                         .IsRequired();
 
                     b.Navigation("Departamento");
+
+                    b.Navigation("OrdemCompra");
 
                     b.Navigation("UsuarioSolicitante");
                 });

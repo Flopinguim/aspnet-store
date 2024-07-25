@@ -1,9 +1,4 @@
 ﻿@using aspnet_store.Models.ViewModels.UsuarioViewModels
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 
 @model AddUsuarioViewModel
 
@@ -23,10 +18,17 @@
     </div>
 
     <div class="mt-3">
-        <select class="form-control" asp-for="DepartamentoId" asp-items="@(new SelectList(Model.Departamentos, "Id", "Nome"))">
-            <option value="">Selecione um Departamento</option>
-        </select>
-        <span asp-validation-for="DepartamentoId" class="text-danger"></span>
+        <label class="form-label">Departamento</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="departamentoNome" readonly />
+            <input type="hidden" asp-for="DepartamentoId" id="departamentoId" />
+            <span asp-validation-for="DepartamentoId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#departamentoModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="mt-3">
@@ -34,6 +36,46 @@
     </div>
 </form>
 
+<!-- Modal para Departamento -->
+<div class="modal fade" id="departamentoModal" tabindex="-1" aria-labelledby="departamentoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="departamentoModalLabel">Selecione um Departamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var departamento in Model.Departamentos)
+                        {
+                            <tr onclick="selectDepartamento('@departamento.Id', '@departamento.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@departamento.Id</td>
+                                <td>@departamento.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function selectDepartamento(id, nome) {
+            document.getElementById('departamentoId').value = id;
+            document.getElementById('departamentoNome').value = nome;
+        }
+    </script>
 }

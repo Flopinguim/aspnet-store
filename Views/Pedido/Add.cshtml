@@ -19,13 +19,13 @@
         <div class="input-group">
             <input type="text" class="form-control rounded-end" id="departamentoNome" readonly />
             <input type="hidden" asp-for="DepartamentoId" id="departamentoId" />
-            <span asp-validation-for="DepartamentoId" class="text-danger"></span>
             <div class="input-group-append">
                 <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#departamentoModal" style="margin-left: 10px">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
         </div>
+        <span asp-validation-for="DepartamentoId" class="text-danger"></span>
     </div>
 
     <div class="form-group mt-3">
@@ -33,13 +33,13 @@
         <div class="input-group">
             <input type="text" class="form-control rounded-end" id="usuarioNome" readonly />
             <input type="hidden" asp-for="UsuarioSolicitanteId" id="usuarioId" />
-            <span asp-validation-for="UsuarioSolicitanteId" class="text-danger"></span>
             <div class="input-group-append">
                 <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#usuarioModal" style="margin-left: 10px">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
         </div>
+        <span asp-validation-for="UsuarioSolicitanteId" class="text-danger"></span>
     </div>
 
     <div class="form-group produto-fields mt-3" style="display: none;">
@@ -47,13 +47,13 @@
         <div class="input-group">
             <input type="text" class="form-control rounded-end" id="produtoNome" readonly />
             <input type="hidden" asp-for="ProdutoId" id="produtoId" />
-            <span asp-validation-for="ProdutoId" class="text-danger"></span>
             <div class="input-group-append">
                 <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#produtoModal" style="margin-left: 10px">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
         </div>
+        <span asp-validation-for="ProdutoId" class="text-danger"></span>
 
         <label asp-for="Quantidade" class="form-label mt-3">Quantidade</label>
         <input asp-for="Quantidade" class="form-control" />
@@ -65,25 +65,25 @@
         <div class="input-group">
             <input type="text" class="form-control rounded-end" id="servicoNome" readonly />
             <input type="hidden" asp-for="ServicoId" id="servicoId" />
-            <span asp-validation-for="ServicoId" class="text-danger"></span>
             <div class="input-group-append">
                 <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#servicoModal" style="margin-left: 10px">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
         </div>
+        <span asp-validation-for="ServicoId" class="text-danger"></span>
 
         <label class="form-label mt-3">Fornecedor</label>
         <div class="input-group">
             <input type="text" class="form-control rounded-end" id="fornecedorNome" readonly />
             <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
-            <span asp-validation-for="FornecedorId" class="text-danger"></span>
             <div class="input-group-append">
                 <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#fornecedorModal" style="margin-left: 10px">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
         </div>
+        <span asp-validation-for="FornecedorId" class="text-danger"></span>
 
         <label asp-for="Observacao" class="form-label mt-3">Observação</label>
         <textarea asp-for="Observacao" class="form-control"></textarea>

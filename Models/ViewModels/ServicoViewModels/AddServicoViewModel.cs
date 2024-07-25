@@ -29,6 +29,7 @@ namespace aspnet_store.Models.ViewModels.ServicoViewModels
         [Required(ErrorMessage = "Preço é obrigatório")]
         public decimal Preco {  get; set; }
 
+        [Required(ErrorMessage = "Prazo de Entrega é obrigatório")]
         public int PrazoEntrega { get; set; }
     }
 }

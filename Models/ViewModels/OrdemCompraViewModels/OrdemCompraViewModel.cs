@@ -17,6 +17,7 @@ namespace aspnet_store.Models.ViewModels.OrdemCompraViewModels
 
         [Required(ErrorMessage = "O fornecedor é obrigatório.")]
         public int FornecedorId { get; set; }
+        public string FornecedorNome { get; set; }
 
         [Required(ErrorMessage = "A data de cadastro é obrigatória.")]
         public DateTime DataCadastro { get; set; }

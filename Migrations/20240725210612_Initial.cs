@@ -87,7 +87,7 @@ namespace aspnet_store.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FornecedorId = table.Column<int>(type: "int", nullable: false),
-                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DataCadastro = table.Column<DateTime>(type: "datetime2(0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,7 +110,9 @@ namespace aspnet_store.Migrations
                     FornecedorId = table.Column<int>(type: "int", nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PrazoEntrega = table.Column<int>(type: "int", nullable: false)
+                    PrazoEntrega = table.Column<int>(type: "int", nullable: false),
+                    DataInicial = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataFinal = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,7 +135,7 @@ namespace aspnet_store.Migrations
                     NotaFiscal = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
                     Deposito = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DataCadastro = table.Column<DateTime>(type: "datetime2(0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -156,7 +158,7 @@ namespace aspnet_store.Migrations
                     Quantidade = table.Column<int>(type: "int", nullable: false),
                     Usuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DepartamentoSolicitante = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DataCadastro = table.Column<DateTime>(type: "datetime2(0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,7 +179,7 @@ namespace aspnet_store.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DepartamentoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioSolicitanteId = table.Column<int>(type: "int", nullable: false),
-                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
                     OrdemCompraId = table.Column<int>(type: "int", nullable: true),
                     PedidoType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     ProdutoId = table.Column<int>(type: "int", nullable: true),
@@ -205,7 +207,8 @@ namespace aspnet_store.Migrations
                         name: "FK_Pedidos_OrdensCompra_OrdemCompraId",
                         column: x => x.OrdemCompraId,
                         principalTable: "OrdensCompra",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Pedidos_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
