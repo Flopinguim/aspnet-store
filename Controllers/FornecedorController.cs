@@ -3,7 +3,8 @@ using aspnet_store.Models.Entities;
 using aspnet_store.Models.ViewModels.FornecedorViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace aspnet_store.Controllers
 {
@@ -55,7 +56,6 @@ namespace aspnet_store.Controllers
         public async Task<IActionResult> List()
         {
             var fornecedors = await dbContext.Fornecedores.ToListAsync();
-
             return View(fornecedors);
         }
 
@@ -104,6 +104,8 @@ namespace aspnet_store.Controllers
             return RedirectToAction("List", "Fornecedor");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var fornecedor = await dbContext.Fornecedores
@@ -111,8 +113,18 @@ namespace aspnet_store.Controllers
 
             if (fornecedor is not null)
             {
+                var pedidosAssociados = await dbContext.PedidoServicos
+                    .AnyAsync(p => p.FornecedorId == id);
+
+                if (pedidosAssociados)
+                {
+                    TempData["ErrorMessage"] = $"O fornecedor {fornecedor.Nome} tem pedidos associados. Não pode ser excluído.";
+                    return RedirectToAction("List");
+                }
+
                 dbContext.Fornecedores.Remove(fornecedor);
                 await dbContext.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"O fornecedor {fornecedor.Nome} foi excluído com sucesso.";
             }
 
             return RedirectToAction("List", "Fornecedor");

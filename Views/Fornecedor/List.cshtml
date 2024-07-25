@@ -8,6 +8,11 @@
         <a class="btn btn-primary mx-2" asp-controller="Fornecedor" asp-action="Add">Cadastrar Novo Fornecedor</a>
     </div>
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
     <table class="table">
         <thead>
             <tr>
@@ -34,7 +39,9 @@
                     <td>@fornecedor.InscricaoMunicipal</td>
                     <td>
                         <a class="btn btn-primary" asp-controller="Fornecedor" asp-action="Edit" asp-route-id="@fornecedor.Id"><i class="bi bi-pencil-fill"></i></a>
-                        <a class="btn btn-danger" asp-controller="Fornecedor" asp-action="Delete" asp-route-id="@fornecedor.Id"><i class="bi bi-trash-fill"></i></a>
+                        <form asp-controller="Fornecedor" asp-action="Delete" asp-route-id="@fornecedor.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                        </form>
                     </td>
                 </tr>
             }

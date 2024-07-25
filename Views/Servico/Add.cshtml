@@ -1,11 +1,9 @@
 ﻿@using aspnet_store.Models.ViewModels.ServicoViewModels
-
 @model AddServicoViewModel
 
 <h1>Adicionar Serviço</h1>
 
-<form method="post">
-
+<form asp-action="Add" method="post">
     <div class="mt-3">
         <label class="form-label">Nome</label>
         <input type="text" class="form-control" asp-for="Nome" />
@@ -13,9 +11,33 @@
     </div>
 
     <div class="mt-3">
+        <label class="form-label">Descrição</label>
+        <textarea class="form-control" asp-for="Descricao"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Data Inicial</label>
+        <input type="date" class="form-control" asp-for="DataInicial" id="DataInicial" />
+        <span asp-validation-for="DataInicial" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Data Final</label>
+        <input type="date" class="form-control" asp-for="DataFinal" id="DataFinal" />
+        <span asp-validation-for="DataFinal" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Preço</label>
+        <input type="number" class="form-control" asp-for="Preco" step="0.01" id="Preco" />
+        <span asp-validation-for="Preco" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
         <label class="form-label">Fornecedor</label>
         <div class="input-group">
-            <input type="text" class="form-control rounded-end" asp-for="FornecedorNome" id="fornecedorNome" readonly disabled />
+            <input type="text" class="form-control rounded-end" asp-for="FornecedorNome" id="fornecedorNome" readonly />
             <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
             <span asp-validation-for="FornecedorId" class="text-danger"></span>
             <div class="input-group-append">
@@ -27,32 +49,8 @@
     </div>
 
     <div class="mt-3">
-        <label class="form-label">Descrição</label>
-        <textarea class="form-control" asp-for="Descricao" rows="3" maxlength="500" style="resize: vertical; max-width: 100%; max-height: 200px;"></textarea>
-        <span asp-validation-for="Descricao" class="text-danger"></span>
-    </div>
-
-    <div class="mt-3">
-        <label class="form-label">Data Inicial</label>
-        <input type="date" class="form-control" asp-for="DataInicial" id="dataInicial" min="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
-        <span asp-validation-for="DataInicial" class="text-danger"></span>
-    </div>
-
-    <div class="mt-3">
-        <label class="form-label">Data Final</label>
-        <input type="date" class="form-control" asp-for="DataFinal" id="dataFinal" min="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
-        <span asp-validation-for="DataFinal" class="text-danger"></span>
-    </div>
-
-    <div class="mt-3">
-        <label class="form-label">Preço</label>
-        <input type="number" class="form-control" asp-for="Preco" min="0"/>
-        <span asp-validation-for="Preco" class="text-danger"></span>
-    </div>
-
-    <div class="mt-3">
-        <label class="form-label">Intervalo (dias):</label>
-        <input type="text" class="form-control" asp-for="PrazoEntrega" id="dateSpan" readonly />
+        <label class="form-label">Prazo de Entrega (dias)</label>
+        <input type="number" class="form-control" asp-for="PrazoEntrega" readonly />
         <span asp-validation-for="PrazoEntrega" class="text-danger"></span>
     </div>
 
@@ -61,7 +59,7 @@
     </div>
 </form>
 
-<!-- Modal -->
+<!-- Modal para Fornecedor -->
 <div class="modal fade" id="fornecedorModal" tabindex="-1" aria-labelledby="fornecedorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -97,37 +95,47 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const dataInicialInput = document.getElementById('dataInicial');
-            const dataFinalInput = document.getElementById('dataFinal');
-            const dateSpanInput = document.getElementById('dateSpan');
-
-            function calculateDateSpan() {
-                const dataInicial = dataInicialInput.value;
-                const dataFinal = dataFinalInput.value;
-
-                if (dataInicial && dataFinal) {
-                    const startDate = new Date(dataInicial);
-                    const endDate = new Date(dataFinal);
-
-                    const timeSpan = endDate - startDate;
-                    const daysDifference = timeSpan / (1000 * 3600 * 24);
-
-                    dateSpanInput.value = daysDifference;
-                } else {
-                    dateSpanInput.value = '';
-                }
-            }
-
-            dataInicialInput.addEventListener('change', calculateDateSpan);
-            dataFinalInput.addEventListener('change', calculateDateSpan);
-        });
-
         function selectFornecedor(id, nome) {
             document.getElementById('fornecedorId').value = id;
             document.getElementById('fornecedorNome').value = nome;
         }
+
+        document.getElementById("DataInicial").addEventListener("change", function () {
+            var dataInicial = document.getElementById("DataInicial").value;
+            document.getElementById("DataFinal").setAttribute("min", dataInicial);
+            calculatePrazoEntrega();
+        });
+
+        document.getElementById("DataFinal").addEventListener("change", calculatePrazoEntrega);
+
+        function calculatePrazoEntrega() {
+            var dataInicial = document.getElementById("DataInicial").value;
+            var dataFinal = document.getElementById("DataFinal").value;
+
+            if (dataInicial && dataFinal) {
+                var date1 = new Date(dataInicial);
+                var date2 = new Date(dataFinal);
+                if (date2 < date1) {
+                    alert("Data Final não pode ser menor que a Data Inicial.");
+                    document.getElementById("DataFinal").value = "";
+                    document.getElementById("PrazoEntrega").value = "";
+                    return;
+                }
+                var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                document.getElementById("PrazoEntrega").value = diffDays;
+            } else {
+                document.getElementById("PrazoEntrega").value = "";
+            }
+        }
+
+        document.getElementById("Preco").addEventListener("input", function () {
+            var preco = document.getElementById("Preco").value;
+            if (preco < 0) {
+                alert("Preço não pode ser negativo.");
+                document.getElementById("Preco").value = "";
+            }
+        });
     </script>
 }

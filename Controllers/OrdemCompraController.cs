@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using aspnet_store.Data;
 using aspnet_store.Models.Entities;
 using aspnet_store.Models.ViewModels.OrdemCompraViewModels;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace aspnet_store.Controllers
 {
@@ -33,8 +33,6 @@ namespace aspnet_store.Controllers
         public async Task<IActionResult> Add()
         {
             var fornecedores = await dbContext.Fornecedores.ToListAsync();
-            ViewBag.Fornecedores = fornecedores;
-
             var pedidosProduto = await dbContext.Pedidos.OfType<PedidoProduto>().Include(p => p.Produto).Where(p => p.OrdemCompraId == null).ToListAsync();
             var pedidosServico = await dbContext.Pedidos.OfType<PedidoServico>().Include(p => p.Servico).Where(p => p.OrdemCompraId == null).ToListAsync();
 
@@ -54,6 +52,7 @@ namespace aspnet_store.Controllers
         public async Task<IActionResult> Add(OrdemCompraViewModel viewModel)
         {
             ModelState.Remove(nameof(viewModel.Fornecedores));
+            ModelState.Remove(nameof(viewModel.FornecedorNome));
             if (ModelState.IsValid)
             {
                 var ordemCompra = new OrdemCompra
@@ -69,7 +68,7 @@ namespace aspnet_store.Controllers
                 if (!selectedPedidoProdutoIds.Any() && !selectedPedidoServicoIds.Any())
                 {
                     ModelState.AddModelError(string.Empty, "Selecione ao menos um pedido de produto ou serviço.");
-                    ViewBag.Fornecedores = await dbContext.Fornecedores.ToListAsync();
+                    viewModel.Fornecedores = await dbContext.Fornecedores.ToListAsync();
                     viewModel.PedidosProduto = await dbContext.Pedidos.OfType<PedidoProduto>().Include(p => p.Produto).Where(p => p.OrdemCompraId == null).ToListAsync();
                     viewModel.PedidosServico = await dbContext.Pedidos.OfType<PedidoServico>().Include(p => p.Servico).Where(p => p.OrdemCompraId == null).ToListAsync();
                     return View(viewModel);
@@ -89,7 +88,7 @@ namespace aspnet_store.Controllers
                 return RedirectToAction(nameof(List));
             }
 
-            ViewBag.Fornecedores = await dbContext.Fornecedores.ToListAsync();
+            viewModel.Fornecedores = await dbContext.Fornecedores.ToListAsync();
             viewModel.PedidosProduto = await dbContext.Pedidos.OfType<PedidoProduto>().Include(p => p.Produto).Where(p => p.OrdemCompraId == null).ToListAsync();
             viewModel.PedidosServico = await dbContext.Pedidos.OfType<PedidoServico>().Include(p => p.Servico).Where(p => p.OrdemCompraId == null).ToListAsync();
             return View(viewModel);

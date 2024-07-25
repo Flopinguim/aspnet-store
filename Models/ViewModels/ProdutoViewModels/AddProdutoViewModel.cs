@@ -8,6 +8,8 @@ namespace aspnet_store.Models.ViewModels.ProdutoViewModels
 
         [Required(ErrorMessage = "Nome é obrigatório")]
         public string Nome { get; set; }
+
+        [Required(ErrorMessage = "Código EAN é obrigatório")]
         public string CodigoEAN { get; set; }
 
         [Required(ErrorMessage = "Preço é obrigatório")]
