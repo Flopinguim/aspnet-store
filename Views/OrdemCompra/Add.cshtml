@@ -1,0 +1,239 @@
+﻿@model aspnet_store.Models.ViewModels.OrdemCompraViewModels.OrdemCompraViewModel
+
+<h1>Cadastrar Ordem de Compra</h1>
+
+<form asp-action="Add" method="post">
+    <div class="form-group mt-3">
+        <label class="form-label">Fornecedor</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="fornecedorNome" readonly />
+            <input type="hidden" asp-for="FornecedorId" id="fornecedorId" />
+            <span asp-validation-for="FornecedorId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#fornecedorModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Data de Cadastro</label>
+        <input type="date" class="form-control" asp-for="DataCadastro" readonly />
+        <span asp-validation-for="DataCadastro" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Pedidos de Produto</label>
+        <div class="input-group">
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalPedidosProduto">
+                Selecionar Pedidos de Produto
+            </button>
+            <input type="hidden" asp-for="SelectedPedidoProdutoIds" />
+            <span asp-validation-for="SelectedPedidoProdutoIds" class="text-danger"></span>
+        </div>
+        <div class="mt-3">
+            <table class="table table-hover" id="selectedPedidosProdutoTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas adicionadas dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Pedidos de Serviço</label>
+        <div class="input-group">
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalPedidosServico">
+                Selecionar Pedidos de Serviço
+            </button>
+            <input type="hidden" asp-for="SelectedPedidoServicoIds" />
+            <span asp-validation-for="SelectedPedidoServicoIds" class="text-danger"></span>
+        </div>
+        <div class="mt-3">
+            <table class="table table-hover" id="selectedPedidosServicoTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Serviço</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas adicionadas dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+
+<!-- Modal Fornecedores -->
+<div class="modal fade" id="fornecedorModal" tabindex="-1" aria-labelledby="fornecedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fornecedorModalLabel">Selecione um Fornecedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fornecedor in Model.Fornecedores)
+                        {
+                            <tr onclick="selectFornecedor('@fornecedor.Id', '@fornecedor.Nome')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@fornecedor.Id</td>
+                                <td>@fornecedor.Nome</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pedidos de Produto -->
+<div class="modal fade" id="modalPedidosProduto" tabindex="-1" aria-labelledby="modalPedidosProdutoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPedidosProdutoLabel">Selecionar Pedidos de Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Preço</th>
+                            <th>Selecionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model.PedidosProduto)
+                        {
+                            <tr>
+                                <td>@pedido.Id</td>
+                                <td>@pedido.Produto.Nome</td>
+                                <td>@pedido.Quantidade</td>
+                                <td>@pedido.Produto.PrecoUnitario.ToString("C")</td>
+                                <td>
+                                    <input type="checkbox" class="pedido-produto-checkbox" value="@pedido.Id" data-produto="@pedido.Produto.Nome" data-quantidade="@pedido.Quantidade" data-preco="@pedido.Produto.PrecoUnitario.ToString("C")" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="selectPedidosProduto()">Selecionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pedidos de Serviço -->
+<div class="modal fade" id="modalPedidosServico" tabindex="-1" aria-labelledby="modalPedidosServicoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPedidosServicoLabel">Selecionar Pedidos de Serviço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Serviço</th>
+                            <th>Preço</th>
+                            <th>Selecionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model.PedidosServico)
+                        {
+                            <tr>
+                                <td>@pedido.Id</td>
+                                <td>@pedido.Servico.Descricao</td>
+                                <td>@pedido.Servico.Preco.ToString("C")</td>
+                                <td>
+                                    <input type="checkbox" class="pedido-servico-checkbox" value="@pedido.Id" data-servico="@pedido.Servico.Descricao" data-preco="@pedido.Servico.Preco.ToString("C")" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="selectPedidosServico()">Selecionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function selectFornecedor(id, nome) {
+            document.getElementById('fornecedorId').value = id;
+            document.getElementById('fornecedorNome').value = nome;
+        }
+
+        function selectPedidosProduto() {
+            var selectedPedidos = [];
+            var selectedPedidosTable = "";
+            document.querySelectorAll('.pedido-produto-checkbox:checked').forEach(function (checkbox) {
+                selectedPedidos.push(checkbox.value);
+                selectedPedidosTable += `<tr>
+                            <td>${checkbox.value}</td>
+                            <td>${checkbox.dataset.produto}</td>
+                            <td>${checkbox.dataset.quantidade}</td>
+                            <td>${checkbox.dataset.preco}</td>
+                        </tr>`;
+            });
+
+            document.querySelector('[name="SelectedPedidoProdutoIds"]').value = selectedPedidos.join(",");
+            document.querySelector('#selectedPedidosProdutoTable tbody').innerHTML = selectedPedidosTable;
+        }
+
+        function selectPedidosServico() {
+            var selectedPedidos = [];
+            var selectedPedidosTable = "";
+            document.querySelectorAll('.pedido-servico-checkbox:checked').forEach(function (checkbox) {
+                selectedPedidos.push(checkbox.value);
+                selectedPedidosTable += `<tr>
+                            <td>${checkbox.value}</td>
+                            <td>${checkbox.dataset.servico}</td>
+                            <td>${checkbox.dataset.preco}</td>
+                        </tr>`;
+            });
+
+            document.querySelector('[name="SelectedPedidoServicoIds"]').value = selectedPedidos.join(",");
+            document.querySelector('#selectedPedidosServicoTable tbody').innerHTML = selectedPedidosTable;
+        }
+    </script>
+}

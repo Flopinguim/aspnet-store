@@ -2,7 +2,101 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "Produto")">
+                        <i class="bi bi-box-seam" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Produto</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "Servico")">
+                        <i class="bi bi-tools" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Serviço</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "Usuario")">
+                        <i class="bi bi-person-fill" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Usuário</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "Departamento")">
+                        <i class="bi bi-building" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Departamento</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "Fornecedor")">
+                        <i class="bi bi-truck" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Fornecedor</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "Pedido")">
+                        <i class="bi bi-file-earmark-text-fill" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Pedido</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("List", "OrdemCompra")">
+                        <i class="bi bi-cart-fill" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Ordem de Compra</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("ListEntrada", "Estoque")">
+                        <i class="bi bi-box-arrow-in-down" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Entrada</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="@Url.Action("ListSaida", "Estoque")">
+                        <i class="bi bi-box-arrow-up" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-2">Saída</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,0 +1,29 @@
+﻿@model List<aspnet_store.Models.Entities.SaidaProduto>
+
+<h1>Saídas de Produto</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Ordem de Compra</th>
+            <th>Quantidade</th>
+            <th>Usuário</th>
+            <th>Departamento Solicitante</th>
+            <th>Data de Cadastro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var saida in Model)
+        {
+            <tr>
+                <td>@saida.Id</td>
+                <td>@saida.OrdemCompraId</td>
+                <td>@saida.Quantidade</td>
+                <td>@saida.Usuario</td>
+                <td>@saida.DepartamentoSolicitante</td>
+                <td>@saida.DataCadastro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

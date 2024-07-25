@@ -1,0 +1,64 @@
+﻿@using aspnet_store.Models.ViewModels.PedidoViewModels
+@model ListPedidoViewModel
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+<h1>Lista de Pedidos</h1>
+<a class="btn btn-primary mx-2" asp-controller="Pedido" asp-action="Add">Cadastrar Novo Pedido</a>
+</div>
+
+<h2>Pedidos de Produtos</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Departamento</th>
+            <th>Usuário Solicitante</th>
+            <th>Data de Cadastro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pedido in Model.PedidosProduto)
+        {
+            <tr>
+                <td>@pedido.Id</td>
+                <td>@pedido.Produto.Nome</td>
+                <td>@pedido.Quantidade</td>
+                <td>@pedido.Departamento.Nome</td>
+                <td>@pedido.UsuarioSolicitante.Nome</td>
+                <td>@pedido.DataCadastro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Pedidos de Serviços</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Serviço</th>
+            <th>Fornecedor</th>
+            <th>Observação</th>
+            <th>Departamento</th>
+            <th>Usuário Solicitante</th>
+            <th>Data de Cadastro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pedido in Model.PedidosServico)
+        {
+            <tr>
+                <td>@pedido.Id</td>
+                <td>@pedido.Servico.Nome</td>
+                <td>@pedido.Fornecedor.Nome</td>
+                <td>@pedido.Observacao</td>
+                <td>@pedido.Departamento.Nome</td>
+                <td>@pedido.UsuarioSolicitante.Nome</td>
+                <td>@pedido.DataCadastro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

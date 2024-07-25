@@ -26,6 +26,9 @@ namespace aspnet_store.Models.ViewModels.ServicoViewModels
         [Required(ErrorMessage = "Data Final é obrigatório")]
         public DateTime DataFinal { get; set; }
 
+        [Required(ErrorMessage = "Preço é obrigatório")]
+        public decimal Preco {  get; set; }
+
         public int PrazoEntrega { get; set; }
     }
 }

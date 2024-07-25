@@ -16,7 +16,6 @@
                 <th>Fornecedor</th>
                 <th>Descrição</th>
                 <th>Prazo de Entrega</th>
-                <th>Fornecedor</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -29,7 +28,6 @@
                     <td>@servico.Fornecedor.Nome</td>
                     <td>@servico.Descricao</td>
                     <td>@servico.PrazoEntrega</td>
-                    <td>@servico.Fornecedor.Nome</td>
                     <td>
                         <a class="btn btn-primary" asp-controller="Servico" asp-action="Edit" asp-route-id="@servico.Id"><i class="bi bi-pencil-fill"></i></a>
                         <a class="btn btn-danger" asp-controller="Servico" asp-action="Delete" asp-route-id="@servico.Id"><i class="bi bi-trash-fill"></i></a>

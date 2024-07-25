@@ -1,0 +1,87 @@
+﻿@model aspnet_store.Models.ViewModels.EstoqueViewModels.EntradaProdutoViewModel
+
+<h1>Registrar Entrada de Produto</h1>
+
+<form asp-action="EntradaProduto" method="post">
+    <div class="form-group mt-3">
+        <label class="form-label">Nota Fiscal</label>
+        <input type="text" class="form-control" asp-for="NotaFiscal" />
+        <span asp-validation-for="NotaFiscal" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Ordem de Compra</label>
+        <div class="input-group">
+            <input type="text" class="form-control rounded-end" id="ordemCompraId" readonly />
+            <input type="hidden" asp-for="OrdemCompraId" id="hiddenOrdemCompraId" />
+            <span asp-validation-for="OrdemCompraId" class="text-danger"></span>
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary rounded-start" type="button" data-bs-toggle="modal" data-bs-target="#ordemCompraModal" style="margin-left: 10px">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Quantidade</label>
+        <input type="number" class="form-control" asp-for="Quantidade" />
+        <span asp-validation-for="Quantidade" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label class="form-label">Depósito</label>
+        <input type="text" class="form-control" asp-for="Deposito" />
+        <span asp-validation-for="Deposito" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+
+<!-- Modal para Ordem de Compra -->
+<div class="modal fade" id="ordemCompraModal" tabindex="-1" aria-labelledby="ordemCompraModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ordemCompraModalLabel">Selecione uma Ordem de Compra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fornecedor</th>
+                            <th>Data Cadastro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ordemCompra in Model.OrdensCompra)
+                        {
+                            <tr onclick="selectOrdemCompra('@ordemCompra.Id')" style="cursor: pointer;" data-bs-dismiss="modal">
+                                <td>@ordemCompra.Id</td>
+                                <td>@ordemCompra.Fornecedor.Nome</td>
+                                <td>@ordemCompra.DataCadastro.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function selectOrdemCompra(id) {
+            document.getElementById('hiddenOrdemCompraId').value = id;
+            document.getElementById('ordemCompraId').value = id;
+        }
+    </script>
+}
